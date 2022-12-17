@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
 import LogInImage from "../assets/Images/login.png";
+import Aouth from "../Components/Aouth";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState();
@@ -58,9 +59,7 @@ export default function ForgetPassword() {
             >
               <p className="text-center px-4"> or continue with</p>
             </div>
-            <button className="w-full rounded-md py-3 bg-primary text-white flex items-center  justify-center">
-              <FcGoogle className="mr-2 text-2xl" /> Google
-            </button>
+            <Aouth />
           </form>
         </div>
       </div>
