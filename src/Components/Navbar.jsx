@@ -6,12 +6,12 @@ import SimpliRent from "../assets/Images/simpliRent.png";
 export default function Navbar() {
   const Location = useLocation();
   const Navigate = useNavigate();
-  console.log(Location.pathname);
+
   const PathName = (routes) => {
     if (routes === Location.pathname) return true;
   };
   return (
-    <div className=" border-b bg-white  z-50 shadow-sm">
+    <div className=" border-b bg-white  z-50 shadow-sm sticky top-0">
       <header className=" flex justify-between items-center p-4 max-w-6xl mx-auto ">
         <div>
           <img
