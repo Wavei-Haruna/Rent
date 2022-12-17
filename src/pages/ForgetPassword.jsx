@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import LogInImage from "../assets/Images/login.png";
 import Aouth from "../Components/Aouth";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { toast } from "react-toastify";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState();
@@ -14,6 +16,17 @@ export default function ForgetPassword() {
     //
     setEmail(e.target.value);
   };
+  // on submit function
+  async function formSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      toast.success("reset link sent");
+    } catch (error) {
+      toast.error("oops something went wrong");
+    }
+  }
 
   return (
     <section className="h-full">
@@ -24,7 +37,8 @@ export default function ForgetPassword() {
         {/* Login image */}
         <img src={LogInImage} alt="" className="mb-10 cursor-pointer" />
         <div className=" md:ml-10 py-8 px-6 bg-blue-100 h-fit md:mt-16">
-          <form>
+          {/* form */}
+          <form onSubmit={formSubmit}>
             <input
               className=" w-full px-4 mb-3 rounded-md shadow-sm border-gray-500  "
               type="email"
