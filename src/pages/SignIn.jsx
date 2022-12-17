@@ -4,6 +4,11 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import LogInImage from "../assets/Images/login.png";
 import Aouth from "../Components/Aouth";
+//firebase authentications libraries
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { db } from "../firebase";
 
 export default function SignIn() {
   const [showpassword, setPassword] = useState(false);
@@ -11,6 +16,26 @@ export default function SignIn() {
     email: "",
     password: "",
   });
+  //
+  const navigate = useNavigate();
+  // form submission
+  async function formSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredential.user) {
+        navigate("/");
+        toast.success("login succces");
+      }
+    } catch (error) {
+      toast.error("oops there is an error");
+    }
+  }
 
   const { email, password } = formData;
   // end of state variables
@@ -27,13 +52,14 @@ export default function SignIn() {
   return (
     <section className="h-full">
       <h1 className="text-center text-primary font-semibold md:text-4xl text-2xl pt-8">
-        Sign Up
+        Sign In
       </h1>
       <div className="grid  md:grid-cols-2 h-full w-full py-3 px-4 max-w-6xl mx-auto">
         {/* Login image */}
         <img src={LogInImage} alt="" className="mb-10 cursor-pointer" />
         <div className=" md:ml-10 py-8 px-6 bg-blue-100 h-fit md:mt-16">
-          <form>
+          {/* This is the beggining of the form */}
+          <form onSubmit={formSubmit}>
             <input
               className=" w-full px-4 mb-3 rounded-md shadow-sm border-gray-500  "
               type="email"

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//  react toast
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./Components/Navbar";
@@ -24,8 +25,8 @@ function App() {
         </Routes>
       </Router>
       <ToastContainer
-        position="top-right"
-        autoClose={5000}
+        position="bottom-right"
+        autoClose={2500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -33,10 +34,8 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
       />
-      {/* Same as */}
-      <ToastContainer />
     </>
   );
 }
