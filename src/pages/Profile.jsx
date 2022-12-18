@@ -1,6 +1,9 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import { db } from "../firebase";
 
 export default function Profile() {
   const auth = getAuth();
@@ -19,8 +22,27 @@ export default function Profile() {
       [e.target.id]: e.target.value,
     }));
   }
-  function applyChanges() {
+  function formSubmit(e) {
+    e.preventDefault();
+  }
+  async function applyChanges(e) {
+    e.preventDefault();
     setEditUser(!editUser);
+    try {
+      // udating the user name in the datbase
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      //updating the profile in storage
+      const docRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(docRef, {
+        name,
+      });
+      toast.success("name updated");
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log(error);
+    }
   }
   //
   function signOut() {
@@ -60,7 +82,10 @@ export default function Profile() {
       ) : (
         //
 
-        <form className=" flex justify-center items-center flex-col bg-blue-200  py-10 m-auto">
+        <form
+          className=" flex justify-center items-center flex-col bg-blue-200  py-10 m-auto"
+          onSubmit={formSubmit}
+        >
           <input
             className="w-[40%] px-4 mb-3 rounded-md shadow-sm border-gray-500  m-auto"
             type="text"
@@ -80,12 +105,14 @@ export default function Profile() {
           />
           <div className=" flex justify-between items-center whitespace-nowrap w-[40%] mb-3 ">
             <button
+              type="text"
               className="bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out duration-800"
               onClick={applyChanges}
             >
               Apply Changes
             </button>
             <button
+              type="text"
               className="bg-blue-800
           text-white font-semibold px-3 py-2 rounded"
               onClick={signOut}
