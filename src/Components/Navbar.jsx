@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 useLocation;
 import SimpliRent from "../assets/Images/simpliRent.png";
@@ -6,6 +7,15 @@ import SimpliRent from "../assets/Images/simpliRent.png";
 export default function Navbar() {
   const Location = useLocation();
   const Navigate = useNavigate();
+  const auth = getAuth();
+  // hooks
+  const [pageStatus, setPageStatus] = useState("sign in");
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) setPageStatus("Profile");
+      else setPageStatus("Sign In");
+    });
+  }, [auth]);
 
   const PathName = (routes) => {
     if (routes === Location.pathname) return true;
@@ -41,11 +51,12 @@ export default function Navbar() {
             </li>
             <li
               className={`cursor-pointer py-2 font-semibold text-[#666666] border-b-2 border-b-transparent ${
-                PathName("/sign-in") && "border-b-gray-500 text-black"
+                (PathName("/sign-in") || PathName("/profile")) &&
+                "border-b-gray-500 text-black"
               }`}
-              onClick={() => Navigate("/sign-in")}
+              onClick={() => Navigate("/profile")}
             >
-              Sign in
+              {pageStatus}
             </li>
           </ul>
         </div>
