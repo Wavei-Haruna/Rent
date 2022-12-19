@@ -2,8 +2,10 @@ import { getAuth, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
+import { FcHome } from "react-icons/fc";
 
 export default function Profile() {
   const auth = getAuth();
@@ -63,19 +65,35 @@ export default function Profile() {
             </h3>
             <h3 className=" text-left text-primary font-semibold ">{email}</h3>
           </div>
-          <div className=" flex justify-between items-center whitespace-nowrap  mb-3 max-w-6xl mx-auto ">
+          <div className=" flex justify-between items-center whitespace-nowrap  mb-3 max-w-6xl mx-auto w-[60%]">
             <button
-              className="bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out duration-800"
+              className="bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out transition duration-200 hover:bg-blue-600 cursor-pointer"
               onClick={() => setEditUser(!editUser)}
             >
               change details
             </button>
             <button
-              className="bg-blue-800
+              className="bg-blue-800 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer
           text-white font-semibold px-3 py-2 rounded"
               onClick={signOut}
             >
               sign out
+            </button>
+            {/* creating the listing butto */}
+          </div>
+          <div className="flex items-center justify-center py-3">
+            <button
+              className="w-[60%] px-4 mb-3 rounded-md shadow-sm border-gray-500 bg-primary py-2 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer"
+              type="submit"
+              onClick={navigate("/create-listing")}
+            >
+              <Link
+                className="flex items-center justify-center  text-white"
+                to="/create-listing"
+              >
+                <FcHome className="mr-3" />
+                <p>Rent or Sell your House</p>
+              </Link>
             </button>
           </div>
         </>
