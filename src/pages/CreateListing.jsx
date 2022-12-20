@@ -1,7 +1,24 @@
+import { db } from "../firebase";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import Spinner from "../Components/Spinner";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection } from "firebase/firestore";
+import { useNavigate } from "react-router";
 
 export default function CreateListing() {
+  const auth = getAuth();
+  const navigate = useNavigate();
   //hooks
+
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -9,15 +26,16 @@ export default function CreateListing() {
     bathRooms: 1,
     kitchen: false,
     furnished: false,
+    offer: false,
     parking: false,
     location: "",
     description: "",
-    offer: false,
-    price: 1500,
     discount: 100,
-    images: null,
+    images: {},
+    latitude: 0,
+    longitude: 0,
   });
-  // deconstract form data
+  // deconstract
   const {
     type,
     name,
@@ -32,15 +50,131 @@ export default function CreateListing() {
     price,
     discount,
     images,
+    latitude,
+    longitude,
   } = formData;
+
   //functions
-  function onChange() {}
+  function onChange(e) {
+    let boolean = null;
+    if (e.target.value === "false") {
+      boolean = false;
+    }
+    if (e.target.value === "true") {
+      boolean = true;
+    }
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }));
+    }
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }));
+    }
+    console.log(formData);
+  }
+  // function for form submision
+  // creating the geolocation
+  const geolocation = {};
+  geolocation.lat = latitude;
+  geolocation.long = longitude;
+
+  async function onFormSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+
+    if (discount >= price) {
+      toast.error("Discount should not be more than regular price");
+      setLoading(false);
+      return;
+    }
+    if (images.length >= 6) {
+      setLoading(false);
+      toast.error("less than 7 images are allowed");
+      return;
+    }
+    // uploading images
+    async function storeImages(image) {
+      // we have to return a new peomise
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        // we need to know the user that is uploading the file so we have to use the backtext to make the fike name dynamic
+        // we also need to add uuid to get random names for the files we are uploading
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+        // after this we need to creaet the storage reference
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+            console.log(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    }
+    // we getting the image urls and putting in the required function
+    const imgUrls = await Promise.all(
+      // get the image and pass it as an argument to the image store function which will get a url for it from the store and assign it back to the image url
+      [...images].map((image) => storeImages(image))
+    ).catch((error) => {
+      toast.error("images not uploaded");
+      setLoading(false);
+    });
+    // creating the form datacopy
+    const formDataCopy = {
+      ...formData,
+      geolocation,
+      imgUrls,
+    };
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discount;
+    // adding a new document to the database
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    docRef && setLoading(false);
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+    toast.success("Listing created");
+  }
+
+  //
+
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <main className="max-w-md px-10 bg-blue-200 mx-auto text-primary">
       <h1 className="text-priamry text-center text-2xl md:text-4xl font-semibold py-3 uppercase">
         Create Listing
       </h1>
-      <form>
+      <form onSubmit={onFormSubmit}>
         <p className="font-semibold mt-6 text-center ">Sell or Rent</p>
         {/* sell or rent buttons */}
         <div className="flex space-x-10">
@@ -50,7 +184,7 @@ export default function CreateListing() {
             }`}
             type="button"
             id="type"
-            value="sale"
+            value="rent"
             onClick={onChange}
           >
             Rent
@@ -61,7 +195,7 @@ export default function CreateListing() {
             }`}
             type="button"
             id="type"
-            value="sale"
+            value="sell"
             onClick={onChange}
           >
             Sell
@@ -76,13 +210,13 @@ export default function CreateListing() {
         <input
           className="rounded my-3 text-xl w-full bg-white transition duration-150 ease-in-out
           "
+          onChange={onChange}
           maxLength="54"
           required
           placeholder="name of property"
           type="text"
           id="name"
           value={name}
-          onChange={onchange}
         />
 
         <div className="flex space-x-10">
@@ -98,13 +232,13 @@ export default function CreateListing() {
             <input
               className="rounded my-3 text-xl w-full bg-white transition duration-150 ease-in-out  text-center
           "
+              onChange={onChange}
               max="100"
               min="1"
               required
               type="number"
               id="bedRooms"
               value={bedRooms}
-              onChange={onchange}
             />
           </div>
           {/* Bathrooms */}
@@ -126,7 +260,7 @@ export default function CreateListing() {
                 type="number"
                 id="bathRooms"
                 value={bathRooms}
-                onChange={onchange}
+                onChange={onChange}
               />
             </div>
           </div>
@@ -165,8 +299,8 @@ export default function CreateListing() {
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
               furnished ? "bg-blue-500 text-white" : "bg-blue-300"
             }`}
-            type="furnished"
-            id="type"
+            type="button"
+            id="furnished"
             value={true}
             onClick={onChange}
           >
@@ -226,8 +360,39 @@ export default function CreateListing() {
           type="text"
           id="location"
           value={location}
-          onChange={onchange}
+          onChange={onChange}
         />
+        {/* end of location */}
+        <div className="flex space-x-10">
+          <div>
+            <p p className=" text-center font-semibold text-primary">
+              Latitude
+            </p>
+            <input
+              className="rounded my-3 text-xl w-full bg-white transition duration-150 ease-in-out
+          "
+              type="number"
+              id="latitude"
+              min="-90"
+              value={latitude}
+              max="90"
+              onChange={onChange}
+            />
+          </div>
+          <div>
+            <p className=" text-center font-semibold text-primary">Longitude</p>
+            <input
+              className="rounded my-3 text-xl w-full bg-white transition duration-150 ease-in-out
+          "
+              type="number"
+              id="longitude"
+              min="-180"
+              value={longitude}
+              max="180"
+              onChange={onChange}
+            />
+          </div>
+        </div>
         <label className="font-semibold text-lg mt-4 p-2" htmlFor="location">
           Description
         </label>
@@ -241,7 +406,7 @@ export default function CreateListing() {
           type="text"
           id="description"
           value={description}
-          onChange={onchange}
+          onChange={onChange}
         />
         {/* car park */}
         <h1 className="text-center font-semibold">Offers</h1>
@@ -281,7 +446,7 @@ export default function CreateListing() {
               id="price"
               max="1000000"
               value={price}
-              onChange={onchange}
+              onChange={onChange}
             ></input>
           </div>
           {type === "rent" ? (
@@ -303,7 +468,7 @@ export default function CreateListing() {
                   id="discount"
                   max="1000000"
                   value={discount}
-                  onChange={onchange}
+                  onChange={onChange}
                 ></input>
               </div>
               {type === "rent" ? (
@@ -325,10 +490,10 @@ export default function CreateListing() {
           className="w-full rounded transition duration-200 ease-in-out shadow-lg mb-4 py-3 font-semibold"
           type="file"
           id="images"
-          value={images}
           accept=".jpg,.jpeg,.png"
           required
           multiple
+          onChange={onChange}
         />
         <div></div>
         {/* creating listing */}

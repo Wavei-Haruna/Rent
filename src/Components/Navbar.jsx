@@ -8,6 +8,7 @@ export default function Navbar() {
   const Location = useLocation();
   const Navigate = useNavigate();
   const auth = getAuth();
+
   // hooks
   const [pageStatus, setPageStatus] = useState("sign in");
   useEffect(() => {
