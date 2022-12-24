@@ -54,9 +54,6 @@ export default function Profile() {
 
   return (
     <section className="py-3 px-4   ">
-      <h1 className="text-center md:text-4xl text-2xl font-semibold ">
-        Profile
-      </h1>
       {!editUser ? (
         <>
           <div className=" max-w-6xl flex flex-col items-center text-left my-4 py-4">
