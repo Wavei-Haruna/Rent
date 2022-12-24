@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
+import user from "../assets/Images/user.png";
 useLocation;
 import SimpliRent from "../assets/Images/simpliRent.png";
 
@@ -10,11 +11,10 @@ export default function Navbar() {
   const auth = getAuth();
 
   // hooks
-  const [pageStatus, setPageStatus] = useState("sign in");
+  const [pageStatus, setPageStatus] = useState(false);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) setPageStatus("Profile");
-      else setPageStatus("Sign In");
+      if (user) setPageStatus(true);
     });
   }, [auth]);
 
@@ -57,7 +57,14 @@ export default function Navbar() {
               }`}
               onClick={() => Navigate("/profile")}
             >
-              {pageStatus}
+              {pageStatus ? (
+                <img
+                  src={user}
+                  className="h-10 absolute top-4 right-16 rounded-full"
+                />
+              ) : (
+                <p>Sign in</p>
+              )}
             </li>
           </ul>
         </div>

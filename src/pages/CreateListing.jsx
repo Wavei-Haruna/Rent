@@ -10,7 +10,7 @@ import {
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router";
 
 export default function CreateListing() {
@@ -75,7 +75,6 @@ export default function CreateListing() {
         [e.target.id]: boolean ?? e.target.value,
       }));
     }
-    console.log(formData);
   }
   // function for form submision
   // creating the geolocation
@@ -149,10 +148,13 @@ export default function CreateListing() {
       setLoading(false);
     });
     // creating the form datacopy
+
     const formDataCopy = {
       ...formData,
       geolocation,
       imgUrls,
+      timestamp: serverTimestamp(),
+      userRef: auth.currentUser.uid,
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discount;
@@ -180,7 +182,7 @@ export default function CreateListing() {
         <div className="flex space-x-10">
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              type === "rent" ? "bg-blue-500 text-white" : "bg-blue-300"
+              type === "rent" ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="type"
@@ -191,7 +193,7 @@ export default function CreateListing() {
           </button>
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              type === "sell" ? "bg-blue-500 text-white" : "bg-blue-300"
+              type === "sell" ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="type"
@@ -270,7 +272,7 @@ export default function CreateListing() {
         <div className="flex space-x-10">
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              kitchen ? "bg-blue-500 text-white" : "bg-blue-300"
+              kitchen ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="kitchen"
@@ -281,7 +283,7 @@ export default function CreateListing() {
           </button>
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              !kitchen ? "bg-blue-500 text-white" : "bg-blue-300"
+              !kitchen ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="kitchen"
@@ -297,7 +299,7 @@ export default function CreateListing() {
         <div className="flex space-x-10">
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              furnished ? "bg-blue-500 text-white" : "bg-blue-300"
+              furnished ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="furnished"
@@ -308,7 +310,7 @@ export default function CreateListing() {
           </button>
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              !furnished ? "bg-blue-500 text-white" : "bg-blue-300"
+              !furnished ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="furnished"
@@ -324,7 +326,7 @@ export default function CreateListing() {
         <div className="flex space-x-10">
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              parking ? "bg-blue-500 text-white" : "bg-blue-300"
+              parking ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="parking"
@@ -335,7 +337,7 @@ export default function CreateListing() {
           </button>
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              !parking ? "bg-blue-500 text-white" : "bg-blue-300"
+              !parking ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="parking"
@@ -413,7 +415,7 @@ export default function CreateListing() {
         <div className="flex space-x-10">
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              offer ? "bg-blue-500 text-white" : "bg-blue-300"
+              offer ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="offer"
@@ -424,7 +426,7 @@ export default function CreateListing() {
           </button>
           <button
             className={`w-full my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition duration-200 ease-in-out uppercase rounded ${
-              !offer ? "bg-blue-500 text-white" : "bg-blue-300"
+              !offer ? "bg-blue-600 text-white" : "bg-blue-300"
             }`}
             type="button"
             id="offer"
@@ -498,7 +500,7 @@ export default function CreateListing() {
         <div></div>
         {/* creating listing */}
         <button
-          className="w-full  my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition  duration-200 ease-in-out uppercase rounded bg-blue-300 active:bg-blue-500 hover:bg-blue-500"
+          className="w-full  my-3 px-7 py-3 font-medium text-sm shadow-md hover:shadow-lg active:shadow-lg focus:shadow-lg transition  duration-200 ease-in-out uppercase rounded bg-white active:bg-blue-600 hover:bg-blue-600"
           type="submit"
         >
           Create Listing{" "}

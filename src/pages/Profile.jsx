@@ -1,22 +1,39 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
 import { FcHome } from "react-icons/fc";
+import ListingItem from "../Components/ListingItem";
+import SkeletonGrid from "../Components/SkeletonGrid";
+import swal from "sweetalert";
 
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
   // hooks
+  const [listings, setListings] = useState(null);
+
+  const [loading, setLoading] = useState(true);
   const [editUser, setEditUser] = useState(false);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
+    userImage: auth.currentUser.photoURL,
   });
-  const { name, email } = formData;
+  console.log(auth.currentUser);
+  const { name, email, userImage } = formData;
   //  event handlers
   function onChange(e) {
     setFormData((prevState) => ({
@@ -51,7 +68,61 @@ export default function Profile() {
     auth.signOut();
     navigate("/");
   }
+  // another use effect to fetch the listing based on the user
+  useEffect(() => {
+    async function fetchUserListing() {
+      const listingRef = collection(db, "listings");
+      const q = query(
+        listingRef,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+      const querySnap = await getDocs(q);
+      let listings = [];
+      // looping through the query snap to push the various ID's and docs details in the doc
 
+      querySnap.forEach((doc) => {
+        listings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+      setLoading(false);
+      setListings(listings);
+    }
+    fetchUserListing();
+  }, [auth.currentUser.uid, listings]);
+  //Editing lisiting
+  function onEdit(listingdID) {
+    navigate(`/edit-listing${listingdID}`);
+  }
+  // deleting listing
+  async function onDelete(listingID) {
+    swal({
+      title: "comfirm?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        const deleteDocFunction = async () => {
+          await deleteDoc(doc(db, "listings", listingID));
+          // we need to update our lisitng after deleting a lisiting
+          const updatedListing = listings.filter((listing) => {
+            listing.id !== listingID;
+          });
+          // update the setlisting hook after filtering the lisiting
+          setListings(updatedListing);
+        };
+        deleteDocFunction();
+        swal("Deleted", {
+          icon: "success",
+        });
+      } else {
+        swal("cancel delete succesful");
+      }
+    });
+  }
   return (
     <section className="py-3 px-4   ">
       {!editUser ? (
@@ -62,15 +133,15 @@ export default function Profile() {
             </h3>
             <h3 className=" text-left text-primary font-semibold ">{email}</h3>
           </div>
-          <div className=" flex justify-between items-center whitespace-nowrap  mb-3 max-w-6xl mx-auto w-[60%]">
+          <div className=" flex justify-between items-center whitespace-nowrap  mb-3 max-w-6xl mx-auto w-[60%] space-x-3 md:w-[40%]">
             <button
-              className="bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out transition duration-200 hover:bg-blue-600 cursor-pointer"
+              className="w-full bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out transition duration-200 hover:bg-blue-600 cursor-pointer"
               onClick={() => setEditUser(!editUser)}
             >
               change details
             </button>
             <button
-              className="bg-blue-800 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer
+              className="w-full bg-blue-800 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer
           text-white font-semibold px-3 py-2 rounded"
               onClick={signOut}
             >
@@ -80,9 +151,9 @@ export default function Profile() {
           </div>
           <div className="flex items-center justify-center py-3">
             <button
-              className="w-[60%] px-4 mb-3 rounded-md shadow-sm border-gray-500 bg-primary py-2 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer"
+              className="w-[60%] md:w-[40%] px-4 mb-3 rounded-md shadow-sm border-gray-500 bg-primary py-2 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer"
               type="submit"
-              onClick={navigate("/create-listing")}
+              onClick={() => navigate("/create-listing")}
             >
               <Link
                 className="flex items-center justify-center  text-white"
@@ -137,6 +208,27 @@ export default function Profile() {
           </div>
         </form>
       )}
+      <div className="grid ">
+        <h1 className="text-center text-primary md:4xl font-semibold">
+          My Listing
+        </h1>
+        {loading && <SkeletonGrid className="w-full" />}
+        {!loading && listings.length > 0 && (
+          <div>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {listings.map((listing) => (
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+                  onEdit={() => onEdit(listing.id)}
+                  onDelete={() => onDelete(listing.id)}
+                />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
