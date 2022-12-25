@@ -32,7 +32,7 @@ export default function Profile() {
     email: auth.currentUser.email,
     userImage: auth.currentUser.photoURL,
   });
-  console.log(auth.currentUser);
+
   const { name, email, userImage } = formData;
   //  event handlers
   function onChange(e) {
@@ -94,7 +94,7 @@ export default function Profile() {
   }, [auth.currentUser.uid, listings]);
   //Editing lisiting
   function onEdit(listingdID) {
-    navigate(`/edit-listing${listingdID}`);
+    navigate(`/edit-listing/${listingdID}`);
   }
   // deleting listing
   async function onDelete(listingID) {
