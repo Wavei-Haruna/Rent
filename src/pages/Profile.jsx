@@ -189,7 +189,7 @@ export default function Profile() {
             placeholder={email}
             onChange={onChange}
           />
-          <div className=" flex justify-between items-center whitespace-nowrap w-[40%] mb-3 ">
+          <div className="flex justify-between items-center whitespace-nowrap w-[40%] mb-3 ">
             <button
               type="text"
               className="bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out duration-800"
@@ -212,7 +212,7 @@ export default function Profile() {
         <h1 className="text-center text-primary md:4xl font-semibold">
           My Listing
         </h1>
-        {loading && <SkeletonGrid className="w-full" />}
+        {loading && <SkeletonGrid className=" " />}
         {!loading && listings.length > 0 && (
           <div>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

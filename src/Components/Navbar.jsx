@@ -13,10 +13,11 @@ export default function Navbar() {
   // hooks
   const [pageStatus, setPageStatus] = useState(false);
   useEffect(() => {
+    setPageStatus(false);
     onAuthStateChanged(auth, (user) => {
       if (user) setPageStatus(true);
     });
-  }, [auth]);
+  });
 
   const PathName = (routes) => {
     if (routes === Location.pathname) return true;
@@ -26,7 +27,7 @@ export default function Navbar() {
       <header className=" flex justify-between items-center p-4 max-w-6xl mx-auto ">
         <div>
           <img
-            className="h-8 cursor-pointer"
+            className="h-10 cursor-pointer"
             src={SimpliRent}
             alt="Logo"
             onClick={() => Navigate("/")}

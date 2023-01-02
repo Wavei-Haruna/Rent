@@ -3,12 +3,11 @@ import ContentLoader from "react-content-loader";
 
 const SkeletonGrid = (props) => (
   <ContentLoader
-    width={800}
-    height={575}
     viewBox="0 0 800 575"
     backgroundColor="#f3f3f3"
     foregroundColor="#262626"
     {...props}
+    className="w-full h-screen"
   >
     <rect x="537" y="9" rx="2" ry="2" width="140" height="10" />
     <rect x="14" y="30" rx="2" ry="2" width="667" height="11" />

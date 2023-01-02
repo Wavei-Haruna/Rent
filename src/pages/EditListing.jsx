@@ -168,12 +168,12 @@ export default function EditListing() {
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discount;
-    // adding a new document to the database
+    // updating the document on the database document to the database
     const docRef = doc(db, "listings", params.listingId);
     await updateDoc(docRef, formDataCopy);
     docRef && setLoading(false);
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
-    toast.success("Edited created");
+    toast.success("Edited");
   }
 
   //

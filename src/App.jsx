@@ -13,6 +13,7 @@ import "./App.css";
 import PrivateRoute from "./Components/PrivateRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
+import Listing from "./pages/Listing";
 
 function App() {
   return (
@@ -35,6 +36,11 @@ function App() {
             />
           </Route>
 
+          <Route
+            exact
+            path="/category/:categoryName/:listingId"
+            element={<Listing />}
+          />
           <Route exact path="/sign-in" element={<SignIn />} />
           <Route exact path="/sing-up" element={<SignUp />} />
           <Route exact path="/forget-password" element={<ForgetPassword />} />
