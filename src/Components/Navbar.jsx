@@ -34,7 +34,7 @@ export default function Navbar() {
           />
         </div>
         <div>
-          <ul className="menu flex  space-x-10 ">
+          <ul className="menu flex  space-x-10  items-center justify-center">
             <li
               className={`cursor-pointer py-2 font-semibold text-[#666666] border-b-2 border-b-transparent ${
                 PathName("/") && "border-b-gray-500 text-black"
@@ -59,10 +59,7 @@ export default function Navbar() {
               onClick={() => Navigate("/profile")}
             >
               {pageStatus ? (
-                <img
-                  src={user}
-                  className="h-10 absolute top-4 right-16 rounded-full"
-                />
+                <img src={user} className="h-10 rounded-full" />
               ) : (
                 <p>Sign in</p>
               )}
