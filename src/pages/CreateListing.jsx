@@ -30,7 +30,8 @@ export default function CreateListing() {
     parking: false,
     location: "",
     description: "",
-    discount: 100,
+    price: 10,
+    discount: 0,
     images: {},
     latitude: 0,
     longitude: 0,
@@ -86,7 +87,7 @@ export default function CreateListing() {
     e.preventDefault();
     setLoading(true);
 
-    if (discount >= price) {
+    if (+discount >= +price) {
       toast.error("Discount should not be more than regular price");
       setLoading(false);
       return;
@@ -158,6 +159,10 @@ export default function CreateListing() {
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discount;
+    if (formDataCopy.offer) {
+      let discountedprice = formDataCopy.price - formDataCopy.discount;
+      formDataCopy.price = discountedprice;
+    }
     // adding a new document to the database
     const docRef = await addDoc(collection(db, "listings"), formDataCopy);
     docRef && setLoading(false);
@@ -460,7 +465,6 @@ export default function CreateListing() {
         {/* end of price */}
         {offer && (
           <>
-            {" "}
             <h1 className="text-center font-semibold text-primary">Discount</h1>
             <div className="flex space-x-10 items-center mb-4">
               <div>
@@ -484,7 +488,6 @@ export default function CreateListing() {
 
         {/* end of discount */}
         <h1 className="text-center text-primary font-semibold">
-          {" "}
           Upload Images
         </h1>
         <p className="text-slate-400 text-sm "> max images 6</p>

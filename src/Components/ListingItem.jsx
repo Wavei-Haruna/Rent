@@ -35,7 +35,7 @@ export default function ListingItem({ listing, id, onEdit, onDelete }) {
           <p className="text-xl">
             Gh¢{" "}
             {listing.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.00
-            /year
+            {listing.type === "rent" ? " /year" : ""}
           </p>
           <p>{listing.offer && listing.discount}</p>
           <div className=" flex space-x-3 w-full px-3 py-2">

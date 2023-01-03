@@ -97,9 +97,9 @@ export default function Listing() {
         <div className="flex flex-col md:flex-row max-w-6xl lg:mx-auto bg-white px-3 py-2 rounded lg:space-x-10 space-y-10 md:space-y-0">
           <div className="bg-pink-300 w-full h-[400px] md:h- px-3 py-2">
             <p className="mt-3 font-semibold text-xl text-gray-700 capitalize">
-              {listing.name}
+              {listing.name} -
               <span className="text-blue-900 ml-3">
-                Gh¢
+                ¢
                 {listing.price
                   ?.toString()
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -111,13 +111,13 @@ export default function Listing() {
               {listing.location}
             </p>
             <div className="flex items-center space-x-2 md:space-x-10">
-              <p className=" mt-3 w-full max-w-[200px] bg-blue-800 text-center uppercase rounded-md py-2 text-white">
+              <p className=" mt-3 w-full max-w-[200px] bg-blue-800 text-center capitalize rounded-md py-2 text-white">
                 {listing.type === "rent" ? "For Rent" : " for Sale"}
               </p>
-              <p className=" mt-3 w-full max-w-[200px] bg-green-800 text-center uppercase rounded-md py-2 text-white">
+              <p className=" mt-3 w-full max-w-[200px] bg-green-800 text-center  rounded-md py-2 text-white">
                 {" "}
                 {listing.offer
-                  ? `discounted ¢ ${+listing.price - +listing.discount}`
+                  ? `¢ ${listing.discount} Discount`
                   : "No discount"}
               </p>
             </div>

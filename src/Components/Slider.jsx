@@ -60,11 +60,11 @@ export default function Slider() {
             className="w-full h-[60vh] relative"
             onClick={() => navigate(`category/${data.type}/${id}`)}
           >
-            <p className=" rounded-full my-4 font-semibold bg-gray-600 bg-opacity-50 px-3 py-1 hover:scale-105 hover:bg-blue-700 w-fit min-w-[100px] text-center text-white relative top-[4%] capitalize">
+            <p className=" rounded-full my-4 cursor-pointer transition duration-200 ease-in-out bg-gray-600 bg-opacity-50 px-3 py-1 hover:scale-105 hover:bg-blue-700 w-fit min-w-[100px] text-center left-2 text-white relative top-[4%] capitalize">
               {" "}
               {data.name}
             </p>
-            <p className=" rounded-full my-4 font-semibold bg-gray-600 bg-opacity-50 px-3 py-1 hover:scale-105 hover:bg-blue-700 w-fit min-w-[100px] text-center text-white absolute bottom-[6%]">
+            <p className=" rounded-full my-4 cursor-pointer transition duration-200 ease-in-out bg-gray-600 bg-opacity-50 px-3 py-1 hover:scale-105 hover:bg-blue-700 w-fit min-w-[100px] text-center left-2 text-white absolute bottom-[6%]">
               {" "}
               ¢{data.price}
             </p>
