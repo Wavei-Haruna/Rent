@@ -30,7 +30,8 @@ export default function Offers() {
         );
         const docSnap = await getDocs(q);
         // lets get the last visible
-
+        const lastVisible = docSnap.docs[docSnap.docs.length - 1];
+        setLastListing(lastVisible);
         if (docSnap) {
           let listing = [];
           docSnap.forEach((doc) => {
@@ -45,44 +46,14 @@ export default function Offers() {
         }
       } catch (error) {
         toast.error("oops there is an error");
+        console.log(error);
       }
     }
     // fetch more listings
 
     fetchListing();
   }, []);
-  async function onFetchMoreListing() {
-    try {
-      const docRef = collection(db, "listings");
-      const q = query(
-        docRef,
-        where("offer", "==", true),
-        orderBy("timestamp", "desc"),
-        startAfter(lastlisting),
-        limit(4)
-      );
 
-      const docSnap = await getDocs(q);
-      // lets get the last visible
-      const lastVisible = docSnap.docs[docSnap.docs.length - 1];
-
-      setLastListing(lastVisible);
-      if (docSnap) {
-        let listing = [];
-        docSnap.forEach((doc) => {
-          listing.push({
-            id: doc.id,
-            data: doc.data(),
-          });
-        });
-        setListing((prevState) => [...prevState, ...listing]);
-        setLoading(false);
-      }
-    } catch (error) {
-      toast.error("oops there is an error");
-      console.log(error);
-    }
-  }
   if (loading) return <Spinner />;
 
   return (
