@@ -108,7 +108,7 @@ export default function Home() {
                 show more offers
               </p>
             </Link>
-            <ul className="sm:grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <ul className="sm:grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {offersListings.map((listing) => (
                 <ListingItem
                   key={listing.id}

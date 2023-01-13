@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
 import { FcHome } from "react-icons/fc";
+import { FaEdit } from "react-icons/fa";
 import ListingItem from "../Components/ListingItem";
 import SkeletonGrid from "../Components/SkeletonGrid";
 import swal from "sweetalert";
@@ -126,7 +127,7 @@ export default function Profile() {
   return (
     <section className="py-3 px-4   ">
       {!editUser ? (
-        <>
+        <div className="md:flex justify-center items-center flex-row-reverse">
           <div className=" max-w-6xl flex flex-col items-center text-left my-4 py-4">
             <h3 className=" text-left text-primary font-semibold mb-3">
               {name}
@@ -135,10 +136,10 @@ export default function Profile() {
           </div>
           <div className=" flex justify-between items-center whitespace-nowrap  mb-3 max-w-6xl mx-auto w-[60%] space-x-3 md:w-[40%]">
             <button
-              className="w-full bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out transition duration-200 hover:bg-blue-600 cursor-pointer"
+              className="w-full bg-primary text-white font-semibold px-3 py-2 rounded ease-in-out transition duration-200 hover:bg-blue-600 cursor-pointer flex items-center justify-center"
               onClick={() => setEditUser(!editUser)}
             >
-              change details
+              <FaEdit className="mr-1 text-green-600" /> change details
             </button>
             <button
               className="w-full bg-blue-800 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer
@@ -151,7 +152,7 @@ export default function Profile() {
           </div>
           <div className="flex items-center justify-center py-3">
             <button
-              className="w-[60%] md:w-[40%] px-4 mb-3 rounded-md shadow-sm border-gray-500 bg-primary py-2 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer"
+              className=" min-w-[200px] px-4 mb-3 rounded-md shadow-sm border-gray-500 bg-primary py-2 transition duration-200 ease-in-out hover:bg-blue-600 cursor-pointer"
               type="submit"
               onClick={() => navigate("/create-listing")}
             >
@@ -160,11 +161,11 @@ export default function Profile() {
                 to="/create-listing"
               >
                 <FcHome className="mr-3" />
-                <p>Rent or Sell your House</p>
+                <p>Rent/Sell House</p>
               </Link>
             </button>
           </div>
-        </>
+        </div>
       ) : (
         //
 
