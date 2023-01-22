@@ -24,7 +24,7 @@ export default function Navbar() {
   };
   return (
     <div className=" border-b bg-white  z-50 shadow-sm sticky top-0">
-      <header className=" flex justify-between items-center p-4 max-w-6xl mx-auto ">
+      <header className=" flex sm:justify-between  items-center p-4 max-w-6xl mx-auto ">
         <div>
           <img
             className="md:h-10 h-8 cursor-pointer w-[70%] md:w-full"
@@ -52,7 +52,7 @@ export default function Navbar() {
               Offers
             </li>
             <li
-              className={`cursor-pointer py-2 font-semibold text-[#666666] border-b-2 border-b-transparent ${
+              className={`cursor-pointer py-2 font-semibold text-[#666666] border-b-2 border-b-transparent px-0 ${
                 (PathName("/sign-in") || PathName("/profile")) &&
                 "border-b-gray-500 text-black"
               }`}

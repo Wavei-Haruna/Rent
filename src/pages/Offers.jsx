@@ -71,10 +71,7 @@ export default function Offers() {
           </ul>{" "}
           {lastlisting && (
             <div className=" px-4 w-full my-4 ">
-              <button
-                className=" rounded-md bg-primary px-4 p-2 text-white font-semibold hover:bg-blue-700 duration-200 transition ease-in-out shadow-md cursor-pointer"
-                onChange={onFetchMoreListing}
-              >
+              <button className=" rounded-md bg-primary px-4 p-2 text-white font-semibold hover:bg-blue-700 duration-200 transition ease-in-out shadow-md cursor-pointer">
                 More Offers
               </button>
             </div>
