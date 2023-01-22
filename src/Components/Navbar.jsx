@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import user from "../assets/Images/user.png";
 useLocation;
-import SimpliRent from "../assets/Images/simpliRent.png";
+import SimpliRent from "../assets/Images/simplirent.png";
 
 export default function Navbar() {
   const Location = useLocation();
