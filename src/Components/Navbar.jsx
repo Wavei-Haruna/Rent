@@ -27,14 +27,14 @@ export default function Navbar() {
       <header className=" flex justify-between items-center p-4 max-w-6xl mx-auto ">
         <div>
           <img
-            className="h-10 cursor-pointer"
+            className="md:h-10 h-8 cursor-pointer w-[70%] md:w-full"
             src={SimpliRent}
             alt="Logo"
             onClick={() => Navigate("/")}
           />
         </div>
         <div>
-          <ul className="menu flex  space-x-10  items-center justify-center">
+          <ul className="menu flex  md:space-x-10  space-x-3 items-center justify-center">
             <li
               className={`cursor-pointer py-2 font-semibold text-[#666666] border-b-2 border-b-transparent ${
                 PathName("/") && "border-b-gray-500 text-black"
