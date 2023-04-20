@@ -11,6 +11,8 @@ import Slider from "../Components/Slider";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
 import ListingItem from "../Components/ListingItem";
+import About from "./About";
+import MemberSection from "./Members";
 
 export default function Home() {
   // useSatehooks
@@ -98,6 +100,7 @@ export default function Home() {
   }, []);
   return (
     <main>
+      <MemberSection />
       <Slider />
       <div className="max-w-6xl mx-auto pt-4 space-y-4">
         {offersListings && offersListings.length > 0 && (
@@ -160,6 +163,7 @@ export default function Home() {
           </div>
         )}
       </div>
+      <About />
     </main>
   );
 }
