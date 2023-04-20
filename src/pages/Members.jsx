@@ -6,7 +6,7 @@ import avatar2 from "../assets/Images/user2.jpg";
 import avatar3 from "../assets/Images/user3.jpeg";
 
 import avatar5 from "../assets/Images/user4.jpg";
-import avatar6 from "../assets/Images/user.png";
+import avatar6 from "../assets/Images/user5.jpg";
 import avatar7 from "../assets/Images/user.png";
 import avatar8 from "../assets/Images/user7.jpeg";
 import avatar9 from "../assets/Images/user8.jpg";
